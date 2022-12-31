@@ -26,8 +26,6 @@ class path:
 
     def robot(self):
         while self.min <= 25:
-            print(self.min, self.robots)
-            # print(self.min, self.goods, self.robots, self.build)
             if self.goods[3] + self.robots[3]*(25-self.min) + ((24-self.min)*(25-self.min)/2) <= self.best:
                 return self.best
 
