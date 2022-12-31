@@ -2,13 +2,14 @@ import time
 start_time = time.time()
 inp = []
 with open("sample.txt") as elf:
-    # inp = elf.readlines()
-    [inp.append(line) for line in elf.read().splitlines()]  # ..end(line.split" ")) for
+    inp = elf.read().strip().splitlines()
+    # [inp.append(line) for line in elf.read().splitlines()]  # ..end(line.split" ")) for
 blueprints = []  # ore, clay, obsidian, geode
 quality = 0
 cont = False
 options = []
 for k, line in enumerate(inp):
+    line = line[30:]
     blueprints.append([])
     for j in range(len(line)):
         if cont:
@@ -20,37 +21,38 @@ for k, line in enumerate(inp):
                 cont = True
             else:
                 blueprints[k].append(int(line[j]))
-
+print(blueprints)
 class paths:
-    def __init__(self, min, goods, robots, blueprint, best, build):
-        self.min = min
-        self.goods = goods
-        self.robots = robots
-        self.blueprint = blueprint
-        self.best = best
-        self.build = build
+    def __init__(self, tupl):
+        self.min = tupl[0]
+        self.goods = tupl[1]
+        self.robots = tupl[2]
+        self.blueprint = tupl[3]
+        self.best = tupl[4]
+        self.build = tupl[5]
     def robot(self):
         while self.min <= 24:
+            print(self.min, self.goods, self.robots, self.build)
             if self.goods[3] + self.robots[3]*(25-self.min) + ((24-self.min)*(25-self.min)/2) <= self.best:
                 return self.best
             # deciding what robot to build (where recursion will take place)
             if self.build[0] == 4:
                 #geode conditions
                 if self.robots[2]:
-                    options.append("")
-                    options[-1] = paths(self.min, self.goods, self.robots, self.blueprint, self.best, [3, False])
+                    options.append(paths((self.min, self.goods, self.robots, self.blueprint, self.best, [3, False])))
+                    print("GEODE")
                 #ore conditions
                 if self.min < 22 and self.robots[0]*(22-self.min) + self.goods[0] < 22-self.min*(max(self.blueprint[1], self.blueprint[2], self.blueprint[4])):
-                    options.append("")
-                    options[-1] = paths(self.min, self.goods, self.robots, self.blueprint, self.best, [0, False])
+                    options.append(paths((self.min, self.goods, self.robots, self.blueprint, self.best, [0, False])))
+                    print("ORE")
                 #obsidian conditions
                 if self.robots[1] and self.min < 22 and self.robots[2]*(22-self.min) + self.goods[2] < 22-self.min*self.blueprint[5]:
-                    options.append([])
-                    options[-1] = paths(self.min, self.goods, self.robots, self.blueprint, self.best, [2, False])
+                    options.append(paths((self.min, self.goods, self.robots, self.blueprint, self.best, [2, False])))
+                    print("OBSIDIAN")
                 #clay conditions
                 if self.min < 20 and self.robots[1]*(22-self.min) + self.goods[1] < 22-self.min*self.blueprint[3]:
-                    options.append([])
-                    options[-1] = paths(self.min, self.goods, self.robots, self.blueprint, self.best, [1, False])
+                    options.append(paths((self.min, self.goods, self.robots, self.blueprint, self.best, [1, False])))
+                    print("CLAY")
                 return self.best
             #starting production
             if (self.build[0] == 0 and self.goods[0] >= self.blueprint[0]) or (self.build[0] == 1 and self.goods[0] >= self.blueprint[1]) or\
@@ -81,11 +83,9 @@ class paths:
 for i in range(len(blueprints)):
     robots = [1, 0, 0, 0]
     goods = [0, 0, 0, 0]
-    options = [paths(1, goods, robots, blueprints[i], 0, [4, False])]
+    options = [paths((1, goods, robots, blueprints[i], 0, [4, False]))]
     top = 0
     while len(options) > 0:
-        if not len(options)%50:
-            print(len(options))
         top = max((options[0].robot()), top)
         options.pop(0)
     print(i+1, top)
