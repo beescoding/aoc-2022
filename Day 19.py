@@ -1,4 +1,5 @@
 import time
+import re
 start_time = time.time()
 inp = []
 with open("sample.txt") as elf:
@@ -10,18 +11,8 @@ cont = False
 options = []
 for k, line in enumerate(inp):
     line = line[30:]
-    blueprints.append([])
-    for j in range(len(line)):
-        if cont:
-            cont = False
-            continue
-        if line[j].isdigit():
-            if line[j + 1].isdigit():
-                blueprints[k].append(int(line[j:j + 2]))
-                cont = True
-            else:
-                blueprints[k].append(int(line[j]))
-print(blueprints)
+    blueprints.append([int(s) for s in re.findall(r'-?\d+\.?\d*', line)])
+
 class paths:
     def __init__(self, tupl):
         self.min = tupl[0]
@@ -53,6 +44,7 @@ class paths:
                 if self.min < 20 and self.robots[1]*(22-self.min) + self.goods[1] < 22-self.min*self.blueprint[3]:
                     options.append(paths((self.min, self.goods, self.robots, self.blueprint, self.best, [1, False])))
                     print("CLAY")
+                print("leaving")
                 return self.best
             #starting production
             if (self.build[0] == 0 and self.goods[0] >= self.blueprint[0]) or (self.build[0] == 1 and self.goods[0] >= self.blueprint[1]) or\
