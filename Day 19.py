@@ -8,23 +8,18 @@ blueprints = []  # ore, clay, obsidian, geode
 quality = 0
 cont = False
 options = []
-for k in range(len(inp)):
-    i = inp[k][34:]
+for k, line in enumerate(inp):
     blueprints.append([])
-    for j in range(len(i)):
+    for j in range(len(line)):
         if cont:
             cont = False
             continue
-        if i[j].isdigit():
-            if i[j + 1].isdigit():
-                blueprints[k].append(int(i[j:j + 2]))
+        if line[j].isdigit():
+            if line[j + 1].isdigit():
+                blueprints[k].append(int(line[j:j + 2]))
                 cont = True
             else:
-                blueprints[k].append(int(i[j]))
-        else:
-            i = i.replace(i[j], " ")
-    i = i.replace(" ", "")
-    inp[k] = i
+                blueprints[k].append(int(line[j]))
 
 class paths:
     def __init__(self, min, goods, robots, blueprint, best, build):
