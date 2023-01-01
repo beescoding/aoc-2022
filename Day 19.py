@@ -77,13 +77,8 @@ class path:
 for i in range(len(blueprints)):
     robots = [1, 0, 0, 0]
     goods = [0, 0, 0, 0]
-    options = [(1, goods, robots, blueprints[i], 0, [4, False])]
-    top = 0
-    while len(options) > 0:
-        top = max(path(options[0]).robot(), top)
-        options.pop(0)
+    top = path((1, goods, robots, blueprints[i], 0, [4, False])).robot()
     print(i+1, top)
     quality += (i + 1) * top
-
 print(quality)
 print("My program took", time.time() - start_time, "to run")
