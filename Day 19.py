@@ -12,13 +12,12 @@ options = []
 paths = []
 
 for k, line in enumerate(inp):
-    blueprints.append([int(s) for s in re.findall(r'-?\d+\.?\d*', line[30:])]) # The blueprint number gets added if including first 30 characters
+    blueprints.append([int(s) for s in re.findall('[0-9]+', line[30:])]) # The blueprint number gets added if including first 30 characters
 
 def path(minute, goods, robots, blueprint, best, build):
     while minute <= 25:
         if goods[3] + robots[3]*(25-minute) + ((24-minute)*(25-minute)/2) <= best:
             return best
-
         # deciding what robot to build (where recursion will take place)
         if build[0] == 4:
             #geode conditions
