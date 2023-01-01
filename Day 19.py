@@ -81,4 +81,13 @@ for i in range(len(blueprints)):
     print(i+1, top)
     quality += (i + 1) * top
 print(quality)
-print("My program took", time.time() - start_time, "to run")
+print("Part 1 took", time.time() - start_time, "to run")
+quality = 1
+for i in range(3):
+    robots = [1, 0, 0, 0]
+    goods = [0, 0, 0, 0]
+    top = path((-7, goods, robots, blueprints[i], 0, [4, False])).robot()
+    print(i+1, top)
+    quality *= top
+print(quality)
+print("Part 1+2 took", time.time() - start_time, "to run")
