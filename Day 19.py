@@ -34,7 +34,7 @@ class path:
             if self.build[0] == 4:
                 #geode conditions
                 if self.robots[2]:
-                    options.append((self.min, self.goods.copy(), self.robots, self.blueprint, self.best, [3, False]))
+                    options.append((self.min, self.goods.copy(), self.robots.copy, self.blueprint, self.best, [3, False]))
                 #ore conditions
                 if self.min < 22 and self.robots[0]*(22-self.min) + self.goods[0] < (22-self.min)*(max(self.blueprint[1], self.blueprint[2], self.blueprint[4])):
                     options.append((self.min, self.goods.copy(), self.robots.copy(), self.blueprint, self.best, [0, False]))
