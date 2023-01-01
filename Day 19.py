@@ -13,11 +13,10 @@ paths = []
 
 for k, line in enumerate(inp):
     blueprints.append([int(s) for s in re.findall(r'-?\d+\.?\d*', line[30:])]) # The blueprint number gets added if including first 30 characters
-blueprints = blueprints[0:3]
-print(blueprints)
+
 class path:
     def __init__(self, tupl):
-        self.min = tupl[0]
+        self.minute = tupl[0]
         self.goods = tupl[1]
         self.robots = tupl[2]
         self.blueprint = tupl[3]
@@ -26,24 +25,24 @@ class path:
 
 
     def robot(self):
-        while self.min <= 25:
-            if self.goods[3] + self.robots[3]*(25-self.min) + ((24-self.min)*(25-self.min)/2) <= self.best:
+        while self.minute <= 25:
+            if self.goods[3] + self.robots[3]*(25-self.minute) + ((24-self.minute)*(25-self.minute)/2) <= self.best:
                 return self.best
 
             # deciding what robot to build (where recursion will take place)
             if self.build[0] == 4:
                 #geode conditions
                 if self.robots[2]:
-                    options.append((self.min, self.goods.copy(), self.robots.copy, self.blueprint, self.best, [3, False]))
+                    self.best = max(path((self.minute, self.goods.copy(), self.robots.copy(), self.blueprint, self.best, [3, False])).robot(), self.best)
                 #ore conditions
-                if self.min < 22 and self.robots[0]*(22-self.min) + self.goods[0] < (22-self.min)*(max(self.blueprint[1], self.blueprint[2], self.blueprint[4])):
-                    options.append((self.min, self.goods.copy(), self.robots.copy(), self.blueprint, self.best, [0, False]))
+                if self.minute < 22 and self.robots[0]*(22-self.minute) + self.goods[0] < (22-self.minute)*(max(self.blueprint[1], self.blueprint[2], self.blueprint[4])):
+                    self.best = max(path((self.minute, self.goods.copy(), self.robots.copy(), self.blueprint, self.best, [0, False])).robot(), self.best)
                 #obsidian conditions
-                if self.robots[1] and self.min < 22 and self.robots[2]*(22-self.min) + self.goods[2] < (22-self.min)*self.blueprint[5]:
-                    options.append((self.min, self.goods.copy(), self.robots.copy(), self.blueprint, self.best, [2, False]))
+                if self.robots[1] and self.minute < 22 and self.robots[2]*(22-self.minute) + self.goods[2] < (22-self.minute)*self.blueprint[5]:
+                    self.best = max(path((self.minute, self.goods.copy(), self.robots.copy(), self.blueprint, self.best, [2, False])).robot(), self.best)
                 #clay conditions
-                if self.min < 20 and self.robots[1]*(22-self.min) + self.goods[1] < (22-self.min)*self.blueprint[3]:
-                    options.append((self.min, self.goods.copy(), self.robots.copy(), self.blueprint, self.best, [1, False]))
+                if self.minute < 20 and self.robots[1]*(22-self.minute) + self.goods[1] < (22-self.minute)*self.blueprint[3]:
+                    self.best = max(path((self.minute, self.goods.copy(), self.robots.copy(), self.blueprint, self.best, [1, False])).robot(), self.best)
                 return self.best
 
             #starting production
@@ -68,9 +67,9 @@ class path:
                     self.goods[0] -= self.blueprint[self.build[0]]
                 self.build = [4, False]
 
-            #next minute
-            self.min += 1
-            if self.min == 24:
+            #next minuteute
+            self.minute += 1
+            if self.minute == 24:
                 self.best = max(self.best, self.goods[3] + self.robots[3])
                 return self.best
 
@@ -78,7 +77,7 @@ class path:
 for i in range(len(blueprints)):
     robots = [1, 0, 0, 0]
     goods = [0, 0, 0, 0]
-    options = [(1, goods, robots, blueprints[i], 1, [4, False])]
+    options = [(1, goods, robots, blueprints[i], 0, [4, False])]
     top = 0
     while len(options) > 0:
         top = max(path(options[0]).robot(), top)
