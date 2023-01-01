@@ -1,19 +1,20 @@
 import time
 import re
 start_time = time.time()
-with open("sample.txt") as elf:
+
+with open("elves.txt") as elf:
     inp = elf.read().strip().splitlines()
+
 blueprints = []  # ore, clay, obsidian, geode
 quality = 0
 cont = False
 options = []
 paths = []
 
-
 for k, line in enumerate(inp):
-    line = line[30:]
-    blueprints.append([int(s) for s in re.findall(r'-?\d+\.?\d*', line)])
-
+    blueprints.append([int(s) for s in re.findall(r'-?\d+\.?\d*', line[30:])]) # The blueprint number gets added if including first 30 characters
+blueprints = blueprints[0:3]
+print(blueprints)
 class path:
     def __init__(self, tupl):
         self.min = tupl[0]
@@ -33,20 +34,16 @@ class path:
             if self.build[0] == 4:
                 #geode conditions
                 if self.robots[2]:
-                    options.append((self.min, self.goods, self.robots, self.blueprint, self.best, [3, False]))
-                    print("GEODE")
+                    options.append((self.min, self.goods.copy(), self.robots, self.blueprint, self.best, [3, False]))
                 #ore conditions
                 if self.min < 22 and self.robots[0]*(22-self.min) + self.goods[0] < (22-self.min)*(max(self.blueprint[1], self.blueprint[2], self.blueprint[4])):
-                    options.append((self.min, self.goods, self.robots, self.blueprint, self.best, [0, False]))
-                    print("ORE")
+                    options.append((self.min, self.goods.copy(), self.robots.copy(), self.blueprint, self.best, [0, False]))
                 #obsidian conditions
                 if self.robots[1] and self.min < 22 and self.robots[2]*(22-self.min) + self.goods[2] < (22-self.min)*self.blueprint[5]:
-                    options.append((self.min, self.goods, self.robots, self.blueprint, self.best, [2, False]))
-                    print("OBSIDIAN")
+                    options.append((self.min, self.goods.copy(), self.robots.copy(), self.blueprint, self.best, [2, False]))
                 #clay conditions
                 if self.min < 20 and self.robots[1]*(22-self.min) + self.goods[1] < (22-self.min)*self.blueprint[3]:
-                    options.append((self.min, self.goods, self.robots, self.blueprint, self.best, [1, False]))
-                    print("CLAY")
+                    options.append((self.min, self.goods.copy(), self.robots.copy(), self.blueprint, self.best, [1, False]))
                 return self.best
 
             #starting production
@@ -58,7 +55,7 @@ class path:
             for j in range(4):
                 self.goods[j] += self.robots[j]
 
-            #robot finish
+            #robot finish (taking away goods and building robot)
             if self.build[1]:
                 self.robots[self.build[0]] += 1
                 if self.build[0] == 3:
@@ -81,7 +78,7 @@ class path:
 for i in range(len(blueprints)):
     robots = [1, 0, 0, 0]
     goods = [0, 0, 0, 0]
-    options = [(1, goods, robots, blueprints[i], 0, [4, False])]
+    options = [(1, goods, robots, blueprints[i], 1, [4, False])]
     top = 0
     while len(options) > 0:
         top = max(path(options[0]).robot(), top)
